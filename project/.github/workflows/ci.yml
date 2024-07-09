@@ -8,7 +8,6 @@ on:
       - "**.md"
   push:
     branches:
-      - master
       - main
     paths-ignore:
       - "docs/**"
@@ -20,26 +19,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: ['3.10', '3.11', '3.12']
         os: [ubuntu-latest, macOS-latest, windows-latest]
 
-        steps:
-          - name: Checkout branch
-            uses: actions/checkout@v3
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
 
-          - name: Set up PDM
-            uses: pdm-project/setup-pdm@main
-            with:
-              python-version: ${{ matrix.python-version }}
-              cache: true
+      - name: Set up PDM
+        uses: pdm-project/setup-pdm@main
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: true
 
-          - name: Setup ssh key
-            uses: webfactory/ssh-agent@v0.5.1
-            with:
-              ssh-private-key: ${{ secrets.SSH_KEY }}
+      # NOTE: Comment out if you're not using private repos.
+      - name: Setup ssh key
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
 
-          - name: Install dependencies
-            run: pdm install
+      - name: Install dependencies
+        run: pdm install
 
-          - name: Run Tests
-            run: pdm test
+      - name: Run Tests
+        run: pdm test
