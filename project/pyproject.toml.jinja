@@ -63,6 +63,14 @@ lint.cmd = "pre-commit run --all-files"
 
 release = "python -m tasks.release"
 
+#
+# PDM hooks
+#
+
+# Automatically sort dependencies when they change.
+# "true" is there since GitHub Actions will fail if this returns a non-zero exit code.
+post_install.shell = "pre-commit run keep-sorted --files pyproject.toml > /dev/null 2> /dev/null; true"
+
 [tool.black]
 line-length = 88
 target-version = ["py311"]
